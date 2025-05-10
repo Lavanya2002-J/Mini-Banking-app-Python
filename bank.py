@@ -13,13 +13,13 @@ def load_user():
         with open ('user.txt','r') as file:
             for line in file:
                 try:
-                    acc_number,name,password,balance = line.strip().split(',')
-                    balance = float(balance)
+                    acc_number,name,password, = line.strip().split(',')
+                    
                 #store user data in accounts dictionary
                     accounts[acc_number] = {
                         "name":name,
                         "password":password,
-                        "balance":balance,
+                        "balance":0.0,
                         "transaction":[]
                         }
                     if int(acc_number)>= next_acc_number:
@@ -30,7 +30,6 @@ def load_user():
         pass
         
 
-# trying github push
 #load accounts from balance.txt
 def load_balances():
     try:
@@ -109,9 +108,9 @@ def create_account():
 
     while True:
         name=input("Enter user name:").strip()
-        if name:
+        if name and name.replace("","").isalpha():
             break
-        print('Name can not be empty')
+        print('Name must contain only letters, can not be empty')
 
     while True:
         password=input("Set a password:").strip()
@@ -139,13 +138,16 @@ def create_account():
         address=input("Enter your address:").strip()
         if address:
             break
-        print('Adress can not be empty')
+        print('Address can not be empty')
 
     while True:
         nic=input('Enter your nic number').strip()
-        if nic:
+        if len(nic) == 12 and nic.isdigit():
             break
-        print('Nic no can not be empty')
+        elif len(nic) == 10 and nic[:-1].isdigit() and nic[-1].upper() == 'V':
+            break
+        else:
+            print('Enter a valid NIC and Nic no can not be empty')
 
 
     acc_number=str(next_acc_number)
@@ -212,7 +214,7 @@ def deposit_money(acc_number):
     try:
         amount= float(input('Enter amount to deposit:'))
         if amount<=0:
-            print("Amount must be grater than 0")
+            print("Amount must be positive")
             return
         accounts[acc_number]['balance'] += amount
         save_balance()
@@ -225,9 +227,9 @@ def deposit_money(acc_number):
 #Withdraw money from account
 def withdraw_money(acc_number):
     try:
-        amount = float(input('Enter amount to withdraw'))
+        amount = float(input('Enter amount to withdraw:'))
         if amount<=0:
-            print('Amount must be grater than 0')
+            print('Amount must be positive')
             return
         if accounts[acc_number]['balance'] >= amount:
             accounts[acc_number]['balance'] -= amount
@@ -282,13 +284,14 @@ def view_transactions(acc_number):
 #user menu after login  
 def user_menu(acc_number):
     while True:
-        print(f"\n Welcome {accounts[acc_number]['name']}")
-        print("1. Check Balance")
-        print("2. Deposit")
-        print("3. Withdraw")
-        print("4. Transaction History")
-        print("5. Transfer Money")
-        print("6. Logout")
+        print(f"\n=======Welcome {accounts[acc_number]['name']}======")
+        print("1.        Check Balance")
+        print("2.        Deposit")
+        print("3.        Withdraw")
+        print("4.        Transaction History")
+        print("5.        Transfer Money")
+        print("6.        Logout")
+        print('\n')
 
         choice = input("Enter your choice: ")
 
@@ -318,8 +321,8 @@ def user_menu(acc_number):
 
 #user login
 def user_login():
-    acc_number = input('Enter account number')
-    password = input('Enter your password')
+    acc_number = input('Enter account number:')
+    password = input('Enter your password:')
     if acc_number in accounts and accounts[acc_number]['password']==password:
         print(f"welcome,{accounts[acc_number]['name']}")
         user_menu(acc_number)
@@ -330,11 +333,12 @@ def user_login():
 def main_menu():
     create_admin_login()
     while True:
-        print('BANKING APP')
-        print("1.user login")
-        print('2.admin login')
-        print('3.exit')
-        choice= input('Enter your choice:1-4:')
+        print('======BANKING APP======')
+        print("1.    User login")
+        print('2.    Admin login')
+        print('3.    Exit')
+        print('\n')
+        choice= input('Enter your choice:1-3:')
         if choice=="1":
             user_login()
         elif choice=="2":
