@@ -166,18 +166,56 @@ def create_account():
     save_balance()
     save_transaction(acc_number,"Initial Balance",balance)
     print(f"Account created succesfully.your account number is { acc_number}")
+    
+
 
 
 #Admin menu
 def admin_menu():
     while True:
-        print("\nADMIN MENU")
-        print('1.create new user')
-        print('2.back to main menu')
+        print("\n======ADMIN MENU======")
+        print('1.     create new user')
+        print('2.     view customer')
+        
+        
+def view_coustomer():
+    acc_number = input("Enter the account number to search:")
+    try:
+        with open('coustomer_info.txt','r') as file:
+            found = False
+            for line in file:
+                info = line.strip().split(',')
+                if len (info) == 7 and info[0] == acc_number:
+                    acc,name,password,phone,address,nic,balance = info
+                    print('\n======CUSTOMERINFORMATION======')
+                    print(f'Name:{name}')
+                    print(f'Account number:{acc}')
+                    print(f'Nic:{nic}')
+                    print(f'phone:{phone}')
+                    print(f'Address:{address}')
+                    print(f'Balance:Rs{balance}')
+                    found = True
+                    break
+            if not found:
+                print("No customer found with that account number")
+    except FileNotFoundError:
+        print("customer information file not found")
+
+
+#Admin menu
+def admin_menu():
+    while True:
+        print("\n======ADMIN MENU======")
+        print('1.    create new user')
+        print('2.    view customer')
+        print('3.    back to main menu')
+        print('\n')
         choice=input("Enter your choice:")
         if choice == "1":
             create_account()
         elif choice == "2":
+            view_coustomer()
+        elif choice == "3":
             break
         else:
             print("Invalid choice try again")
@@ -284,13 +322,13 @@ def view_transactions(acc_number):
 #user menu after login  
 def user_menu(acc_number):
     while True:
-        print(f"\n=======Welcome {accounts[acc_number]['name']}======")
-        print("1.        Check Balance")
-        print("2.        Deposit")
-        print("3.        Withdraw")
-        print("4.        Transaction History")
-        print("5.        Transfer Money")
-        print("6.        Logout")
+        print(f"\n=======Welcome {accounts[acc_number]['name']}========")
+        print("1.       Check Balance")
+        print("2.       Deposit")
+        print("3.       Withdraw")
+        print("4.       Transaction History")
+        print("5.       Transfer Money")
+        print("6.       Logout")
         print('\n')
 
         choice = input("Enter your choice: ")
